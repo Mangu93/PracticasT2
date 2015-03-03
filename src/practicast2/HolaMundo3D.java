@@ -30,13 +30,13 @@ public class HolaMundo3D extends JFrame {
 
     BranchGroup crearEscena() {
         BranchGroup objRoot = new BranchGroup();
-        /*Transform3D rotacion = new Transform3D();
-        rotacion.rotX(Math.PI / 4.0d); //Datos de rotación en X 45 grados
+        Transform3D rotacion = new Transform3D();
+        rotacion.rotY(Math.PI / 4.0d); //Datos de rotación en X 45 grados
         //hacer cada transformacion en un transformgroup
         //rotacion.rotZ(Math.PI / 4.0d);
         TransformGroup cuboRotando = new TransformGroup(rotacion);
         cuboRotando.addChild(new ColorCube(0.4));
-        objRoot.addChild(cuboRotando);*/
+        objRoot.addChild(cuboRotando);
         return objRoot;
     }
 
