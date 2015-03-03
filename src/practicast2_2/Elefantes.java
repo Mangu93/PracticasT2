@@ -45,37 +45,51 @@ public class Elefantes extends JFrame {
     }
 
     BranchGroup crearEscena() {
-        //Preparacion de los objetos
         BranchGroup objRoot = new BranchGroup();
+        BranchGroup final_bg = new BranchGroup();
+        //begin Apariencia
         Appearance apariencia = new Appearance();
         Color3f color_material = new Color3f(1f, 1f, 0f);
         Material material = new Material();
         material.setDiffuseColor(color_material);
         material.setSpecularColor(1f, 1f, 0f);
         apariencia.setMaterial(material);
-        Box box = new Box(0.3f, 0.2f, 0.1f, null);
+        //begin Box and Sphere
+        Box box = new Box(0.3f, 0.2f, 0.1f, apariencia);
         Sphere esfera = new Sphere(0.5f, apariencia);
-        //Comienzan las transformaciones
+        //begin Transform
         Transform3D colocar = new Transform3D();
         Transform3D rotacion = new Transform3D();
+        Transform3D colocar_box = new Transform3D();
+        colocar_box.set(new Vector3f(0f,-0.2f,0f));
         colocar.set(new Vector3f(0f, 0.5f, 0.0f));
         TransformGroup colocar_esfera = new TransformGroup(colocar);
         colocar_esfera.addChild(esfera);
+        //sphere in position
+        //begin lights
         BoundingSphere limites = new BoundingSphere(new Point3d(-5, 0, 5), 100.0); //Localizacion de fuente/paso de luz
         AmbientLight LuzAmbiente = new AmbientLight(new Color3f(0.2f, 0.5f, 0.8f));
         LuzAmbiente.setInfluencingBounds(limites);
-        LuzAmbiente.setInfluencingBounds(limites);
         objRoot.addChild(LuzAmbiente);
-        objRoot.addChild(box);
+        //Debe añadirse a otro TG
+        TransformGroup colocar_box_tg = new TransformGroup(colocar_box);
+        colocar_box_tg.addChild(box);
+        objRoot.addChild(colocar_box_tg);
+        //objRoot.addChild(box);
         
-        Transform3D deformar = new Transform3D();
-        
-        deformar.setScale(new Vector3d(+3,+1,0));
+        Transform3D deformar = new Transform3D();  
+        deformar.setScale(new Vector3d(-0.5,0.5,1));
         TransformGroup reducir_esfera = new TransformGroup(deformar);
         reducir_esfera.addChild(colocar_esfera);
+        //Debe añadirse a otro BG
         objRoot.addChild(reducir_esfera);
-        //objRoot.addChild(esfera);
-        return objRoot;
+        //añadir rotacion final
+        /*rotacion.rotY(Math.PI / 4.0d);
+        TransformGroup rotacion_grupal = new TransformGroup(rotacion);
+        rotacion_grupal.addChild(objRoot);
+        final_bg.addChild(rotacion_grupal);*/
+        final_bg.addChild(objRoot);
+        return final_bg;
     }
 
     public static void main(String args[]) {
