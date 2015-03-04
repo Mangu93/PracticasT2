@@ -37,7 +37,6 @@ public class Elefantes extends JFrame {
     BoundingSphere bounds = new BoundingSphere(new Point3d(0, 0, 0), 100.0);
     public String elefante_resource = "resources/elephav.obj";
     SimpleUniverse universo;
-    
 
     public Elefantes() {
         Container miPanel = getContentPane();
@@ -53,30 +52,40 @@ public class Elefantes extends JFrame {
     BranchGroup crearEscena() {
         BranchGroup objRoot = new BranchGroup();
         ObjectFile file = new ObjectFile(ObjectFile.RESIZE);
-        Scene scene = null;
-
+        Scene scene1 = null;
+        Scene scene2 = null;
         try {
-            scene = file.load(elefante_resource);
+            scene1 = file.load(elefante_resource);
+            scene2 = file.load(elefante_resource);
         } catch (FileNotFoundException ex) {
             System.err.println("Fallo en carga elefantes");
             System.exit(ERROR);
         }
-        BranchGroup elefante1 = scene.getSceneGroup();
+
+        BranchGroup elefante1 = scene1.getSceneGroup();
+        BranchGroup elefante2 = scene2.getSceneGroup();
+
+        //Primer elefante
         Transform3D deformar = new Transform3D();
-        deformar.setScale(new Vector3d(-0.5, 0.5, 1));
+        deformar.setScale(new Vector3d(1, 0.7, 1));
         TransformGroup tg_deformar = new TransformGroup(deformar);
         tg_deformar.addChild(elefante1);
         Transform3D rotar_elefante_izq = new Transform3D();
-        rotar_elefante_izq.rotY(Math.PI / 9.5d);
+        rotar_elefante_izq.rotY(Math.PI / 5d);
         TransformGroup tg_rotar_elefante = new TransformGroup(rotar_elefante_izq);
         tg_rotar_elefante.addChild(tg_deformar);
         Transform3D colocar_izq = new Transform3D();
-        colocar_izq.set(new Vector3f(-0.7f, -0.2f, 0.0f));
+        colocar_izq.set(new Vector3f(-0.5f, 0f, 0.0f));
         TransformGroup tg_colocar_izq = new TransformGroup(colocar_izq);
         tg_colocar_izq.addChild(tg_rotar_elefante);
+        //Segundo elefante
+        Transform3D colocar_der = new Transform3D();
+        colocar_der.set(new Vector3f(0.4f, 0, 0));
+        TransformGroup tg_colocar_der = new TransformGroup(colocar_der);
+        tg_colocar_der.addChild(elefante2);
+        TransformGroup tg_deformar_der = new TransformGroup(deformar);
+        tg_deformar_der.addChild(tg_colocar_der);
         //LUZ
-        AmbientLight ambientLightNode = new AmbientLight(white);
-        ambientLightNode.setInfluencingBounds(bounds);
         // Set up the directional lights
         Vector3f light1Direction = new Vector3f(-1.0f, 1.0f, -1.0f);
         // light coming from left, up, and back quadrant
@@ -85,15 +94,17 @@ public class Elefantes extends JFrame {
         DirectionalLight light1
                 = new DirectionalLight(white, light1Direction);
         light1.setInfluencingBounds(bounds);
-                DirectionalLight light2
+        DirectionalLight light2
                 = new DirectionalLight(white, light2Direction);
         light2.setInfluencingBounds(bounds);
-        //objRoot.addChild(ambientLightNode);
         objRoot.addChild(light1);
         objRoot.addChild(light2);
         BranchGroup elf_izq_final = new BranchGroup();
         elf_izq_final.addChild(tg_colocar_izq);
+        BranchGroup elf_der_final = new BranchGroup();
+        elf_der_final.addChild(tg_deformar_der);
         objRoot.addChild(elf_izq_final);
+        objRoot.addChild(elf_der_final);
         return objRoot;
 
     }
