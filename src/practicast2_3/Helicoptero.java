@@ -51,15 +51,21 @@ public class Helicoptero extends JFrame {
         BranchGroup objRoot = new BranchGroup();
         Appearance apariencia_roja = new Appearance();
         Appearance apariencia_azul = new Appearance();
+        
         Material mat = new Material();
         mat.setDiffuseColor(red);  //color cuando hay luz direccional
         mat.setSpecularColor(new Color3f(1f, 1f, 0f));  //color amarillo para el reflejo de luz
         mat.setShininess(128f); //brillo máximo de reflejo de luz
-        apariencia_roja.setMaterial(mat);
+        Material mat2 = new Material();
+        mat2.setDiffuseColor(red);  //color cuando hay luz direccional
+        mat2.setSpecularColor(new Color3f(1f, 1f, 0f));  //color amarillo para el reflejo de luz
+        mat2.setShininess(128f); //brillo máximo de reflejo de luz
+        apariencia_roja.setMaterial(mat2);
         mat.setDiffuseColor(blue);
         apariencia_azul.setMaterial(mat);
-        Cylinder cilindro1 = new Cylinder(0.05f, alturaCilindros, new Appearance());
-        Cylinder cilindro2 = new Cylinder(0.05f, alturaCilindros, apariencia_azul);
+        
+        Cylinder cilindro1 = new Cylinder(0.05f, alturaCilindros, apariencia_azul);
+        Cylinder cilindro2 = new Cylinder(0.05f, alturaCilindros, apariencia_roja);
         Cylinder cilindro3 = new Cylinder(0.05f, alturaCilindros, apariencia_roja);
         //PRIMERO ROTO EL 2
         Transform3D rota_cil2 = new Transform3D();
