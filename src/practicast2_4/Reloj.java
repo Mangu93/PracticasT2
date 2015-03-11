@@ -12,6 +12,8 @@ import javax.media.j3d.Appearance;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
+import javax.media.j3d.DirectionalLight;
+import javax.media.j3d.Material;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.swing.JFrame;
@@ -32,6 +34,7 @@ public class Reloj extends JFrame {
     SimpleUniverse universo;
     float anguloAntebrazo = 45f;
     TransformGroup preparaAntebrazoParaRotableTG;
+    TransformGroup rotaAntebrazoTG;
 
     public Reloj() {
         Container miPanel = getContentPane();
@@ -46,8 +49,20 @@ public class Reloj extends JFrame {
 
     BranchGroup crearEscena(float anguloAntebrazo) {
         BranchGroup objRoot = new BranchGroup();
-        Cylinder cilindro1 = new Cylinder(0.05f, alturaCilindros, new Appearance());
-        Cylinder cilindro2 = new Cylinder(0.05f, alturaCilindros, new Appearance());
+        Material mat = new Material();
+        mat.setDiffuseColor(new Color3f(1,1,0));  //color cuando hay luz direccional
+        mat.setSpecularColor(new Color3f(1f, 1f, 0f));  //color amarillo para el reflejo de luz
+        mat.setShininess(128f); //brillo máximo de reflejo de luz
+        Appearance amarillo = new Appearance();
+        amarillo.setMaterial(mat);
+        Appearance verde = new Appearance();
+        Material mat2 = new Material();
+        mat2.setDiffuseColor(new Color3f(0, 1, 0));  //color cuando hay luz direccional
+        mat2.setSpecularColor(new Color3f(1f, 1f, 0f));  //color amarillo para el reflejo de luz
+        mat2.setShininess(128f); //brillo máximo de reflejo de luz
+        verde.setMaterial(mat2);
+        Cylinder cilindro1 = new Cylinder(0.05f, alturaCilindros, amarillo);
+        Cylinder cilindro2 = new Cylinder(0.05f, alturaCilindros, verde);
         Transform3D preparaAntebrazoParaRotable = new Transform3D();
         Transform3D rotaAntebrazo = new Transform3D();
         Transform3D posicionaAntebrazo = new Transform3D();
@@ -56,32 +71,47 @@ public class Reloj extends JFrame {
         rotaAntebrazo.rotZ(-anguloAntebrazo);
         preparaAntebrazoParaRotable.set(new Vector3f(0f, alturaCilindros / 2f, 0f));
         TransformGroup posicionaAntebrazoTG = new TransformGroup(posicionaAntebrazo);
-        TransformGroup rotaAntebrazoTG = new TransformGroup(rotaAntebrazo);
+        rotaAntebrazoTG = new TransformGroup(rotaAntebrazo);
         //TransformGroup preparaAntebrazoParaRotableTG = new TransformGroup(preparaAntebrazoParaRotable);
         preparaAntebrazoParaRotableTG = new TransformGroup(preparaAntebrazoParaRotable);
         objRoot.addChild(cilindro1);
         objRoot.addChild(posicionaAntebrazoTG);
         posicionaAntebrazoTG.addChild(rotaAntebrazoTG);
         rotaAntebrazoTG.addChild(preparaAntebrazoParaRotableTG);
-        
-        preparaAntebrazoParaRotableTG.addChild(cilindro2);
-        preparaAntebrazoParaRotableTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+        rotaAntebrazoTG.addChild(cilindro2);
+        rotaAntebrazoTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+        /*
+         preparaAntebrazoParaRotableTG.addChild(cilindro2);
+         preparaAntebrazoParaRotableTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);*/
+        //Luz
+        DirectionalLight LuzDireccional = new DirectionalLight(new Color3f(1f, 1f, 1f), new Vector3f(1f, 0f, -1f));
+        BoundingSphere limites = new BoundingSphere(new Point3d(-5, 0, 5), 100.0); //Localizacion de fuente/paso de luz
+        LuzDireccional.setInfluencingBounds(limites);
+        objRoot.addChild(LuzDireccional);
         return objRoot;
     }
-    
-    public void rotar() {
-        Transform3D rotacion = new Transform3D();
-        float this_angulo = 0.0f;
-        for (int i = 0; i < 361; i++) {
-            anguloAntebrazo=(float) i;
-            
-        }
-    }
-        public static void main(String args[]) {
-        EscenaB x = new EscenaB();
+
+    public static void main(String args[]) {
+        Reloj x = new Reloj();
         x.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         x.setTitle("Reloj");
         x.setSize(800, 600);
         x.setVisible(true);
+        Transform3D actual = new Transform3D();
+        Transform3D rotacion = new Transform3D();
+        float this_angulo = 0.01f;
+        while (true) {
+            try {
+                x.rotaAntebrazoTG.getTransform(actual);
+                rotacion.rotZ(this_angulo);
+                actual.mul(rotacion);
+                x.rotaAntebrazoTG.setTransform(actual);
+
+                Thread.sleep(10);
+            } catch (Exception ex) {
+                System.err.println(ex.getMessage());
+
+            }
+        }
     }
 }
