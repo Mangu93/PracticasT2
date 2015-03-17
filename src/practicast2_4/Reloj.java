@@ -20,7 +20,6 @@ import javax.swing.JFrame;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
-import practicast2_3.EscenaB;
 
 /**
  *
@@ -107,7 +106,7 @@ public class Reloj extends JFrame {
                 actual.mul(rotacion);
                 x.rotaAntebrazoTG.setTransform(actual);
 
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (Exception ex) {
                 System.err.println(ex.getMessage());
 
